@@ -149,7 +149,47 @@ apt-get install -y \
   screen hunspell-en-us hunspell-es hyphen-en-us hyphen-es \
   wamerican wspanish locales
 
-# ─── 3. Snap packages ────────────────────────────────────────────────
+# ─── 3. OpenCode (Desktop + CLI) ─────────────────────────────────────
+info "Instalando OpenCode..."
+
+OC_DEB="/tmp/opencode-desktop.deb"
+OC_TAR="/tmp/opencode-cli.tar.gz"
+
+# Obtener ultima version desde GitHub
+OC_VERSION=$(curl -fsSL "https://api.github.com/repos/anomalyco/opencode/releases/latest" \
+  | grep '"tag_name"' | head -1 | sed 's/.*"v\([^"]*\)".*/\1/')
+if [[ -z "$OC_VERSION" ]]; then
+  warn "No se pudo obtener la version de OpenCode — usando URL por defecto"
+  OC_VERSION="latest"
+fi
+
+# --- OpenCode Desktop (.deb) ---
+if ! dpkg -l opencode &>/dev/null 2>&1; then
+  info "Descargando OpenCode Desktop v${OC_VERSION}..."
+  curl -fsSL -o "$OC_DEB" \
+    "https://github.com/anomalyco/opencode/releases/download/v${OC_VERSION}/opencode-desktop-linux-amd64.deb"
+  dpkg -i "$OC_DEB" || apt-get install -f -y
+  rm -f "$OC_DEB"
+else
+  info "OpenCode Desktop ya instalado"
+fi
+
+# --- OpenCode CLI (binario en ~/.opencode/bin/) ---
+OC_CLI_DIR="$REAL_HOME/.opencode/bin"
+if [[ ! -f "$OC_CLI_DIR/opencode" ]]; then
+  info "Descargando OpenCode CLI v${OC_VERSION}..."
+  curl -fsSL -o "$OC_TAR" \
+    "https://github.com/anomalyco/opencode/releases/download/v${OC_VERSION}/opencode-linux-x64.tar.gz"
+  mkdir -p "$OC_CLI_DIR"
+  tar -xzf "$OC_TAR" -C "$OC_CLI_DIR"
+  chmod +x "$OC_CLI_DIR/opencode"
+  rm -f "$OC_TAR"
+  chown -R "$REAL_USER:$REAL_USER" "$REAL_HOME/.opencode"
+else
+  info "OpenCode CLI ya instalado"
+fi
+
+# ─── 4. Snap packages ────────────────────────────────────────────────
 if command -v snap &>/dev/null; then
   info "Instalando snaps..."
   snap install --autoclass autopsy localsend warzone2100
@@ -221,7 +261,7 @@ source $ZSH/oh-my-zsh.sh
 alias jc="jq -C | less -R"
 
 # PATH additions (adjustar segun usuario)
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.opencode/bin:$PATH"
 
 # Cortex CLI completion
 [[ -s ~/.zsh/completions/cortex.zsh ]] && source ~/.zsh/completions/cortex.zsh

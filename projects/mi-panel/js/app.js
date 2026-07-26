@@ -2,12 +2,32 @@
     'use strict';
 
     const API_BASE = 'api';
+    const COOKIE_NAME = 'mi_panel_state';
     let allPrograms = [];
     let serviceStates = {};  // { command_key: { active, memory, pid } }
     let activeType = 'all';
     let activeCategory = null;
     let searchQuery = '';
     let currentLogsService = null;
+
+    // ── Cookie helpers ──
+    function saveState() {
+        const state = { v: 1, t: activeType, c: activeCategory, q: searchQuery };
+        document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(state))};path=/;max-age=2592000`;
+    }
+
+    function loadState() {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + COOKIE_NAME + '=([^;]*)'));
+        if (!match) return;
+        try {
+            const state = JSON.parse(decodeURIComponent(match[1]));
+            if (state && state.v === 1) {
+                activeType = state.t || 'all';
+                activeCategory = state.c || null;
+                searchQuery = state.q || '';
+            }
+        } catch { /* ignore corrupt cookie */ }
+    }
 
     // ── DOM refs ──
     const grid         = document.getElementById('programsGrid');
@@ -22,8 +42,25 @@
 
     // ── Init ──
     async function init() {
+        loadState();
+        searchInput.value = searchQuery;
         await loadPrograms();
+        applyFilterUI();
         setupEventListeners();
+    }
+
+    // ── Apply loaded state to filter UI ──
+    function applyFilterUI() {
+        // Restore active type tab
+        typeFilters.querySelectorAll('.tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.type === activeType);
+        });
+        // Restore active category button
+        if (activeCategory) {
+            catFilters.querySelectorAll('.cat-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.category === activeCategory);
+            });
+        }
     }
 
     // ── Load programs ──
@@ -325,6 +362,7 @@
         // Search
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value;
+            saveState();
             render();
         });
 
@@ -335,6 +373,7 @@
             typeFilters.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
             activeType = btn.dataset.type;
+            saveState();
             render();
         });
 
@@ -350,6 +389,7 @@
                 btn.classList.add('active');
                 activeCategory = btn.dataset.category;
             }
+            saveState();
             render();
         });
 

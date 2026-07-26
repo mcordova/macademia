@@ -139,6 +139,30 @@ header h1 {
     color: var(--accent);
 }
 
+/* ── Sort ── */
+.sort-box {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.sort-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+.sort-box select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    cursor: pointer;
+    outline: none;
+}
+.sort-box select:focus {
+    border-color: var(--accent);
+}
+
 /* ── Grid ── */
 main {
     padding: 1.5rem 2rem 3rem;

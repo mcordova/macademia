@@ -5,14 +5,16 @@
     const COOKIE_NAME = 'mi_panel_state';
     let allPrograms = [];
     let serviceStates = {};  // { command_key: { active, memory, pid } }
+    let lastRun = {};        // { program_id: '2026-07-26 10:31:53' }
     let activeType = 'all';
     let activeCategory = null;
     let searchQuery = '';
+    let sortBy = 'name';
     let currentLogsService = null;
 
     // ── Cookie helpers ──
     function saveState() {
-        const state = { v: 1, t: activeType, c: activeCategory, q: searchQuery };
+        const state = { v: 1, t: activeType, c: activeCategory, q: searchQuery, s: sortBy };
         document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(state))};path=/;max-age=2592000`;
     }
 
@@ -25,6 +27,7 @@
                 activeType = state.t || 'all';
                 activeCategory = state.c || null;
                 searchQuery = state.q || '';
+                sortBy = state.s || 'name';
             }
         } catch { /* ignore corrupt cookie */ }
     }
@@ -36,6 +39,7 @@
     const searchInput  = document.getElementById('search');
     const typeFilters  = document.getElementById('typeFilters');
     const catFilters   = document.getElementById('categoryFilters');
+    const sortSelect   = document.getElementById('sortBy');
     const launchModal  = document.getElementById('launchModal');
     const historyModal = document.getElementById('historyModal');
     const logsModal    = document.getElementById('logsModal');
@@ -44,8 +48,11 @@
     async function init() {
         loadState();
         searchInput.value = searchQuery;
+        sortSelect.value = sortBy;
         await loadPrograms();
         applyFilterUI();
+        await loadLastRunTimes();
+        render();
         setupEventListeners();
     }
 
@@ -61,6 +68,8 @@
                 b.classList.toggle('active', b.dataset.category === activeCategory);
             });
         }
+        // Restore sort select
+        sortSelect.value = sortBy;
     }
 
     // ── Load programs ──
@@ -70,11 +79,24 @@
             allPrograms = await res.json();
             buildCategoryFilters();
             renderStats();
-            render();
             fetchAllServiceStatuses();
         } catch (e) {
             grid.innerHTML = '<div class="empty-state">Failed to load programs. Is the PHP server running?</div>';
         }
+    }
+
+    // ── Load last execution times for all programs ──
+    async function loadLastRunTimes() {
+        try {
+            const res = await fetch(`${API_BASE}/history.php?limit=200`);
+            const data = await res.json();
+            for (const e of data) {
+                // Keep only the most recent per program
+                if (!lastRun[e.program_id] || e.executed_at > lastRun[e.program_id]) {
+                    lastRun[e.program_id] = e.executed_at;
+                }
+            }
+        } catch { /* ignore */ }
     }
 
     // ── Build category filter buttons ──
@@ -126,6 +148,35 @@
                 if (!haystack.includes(q)) return false;
             }
             return true;
+        });
+
+        // Sort
+        const typeOrder = { service: 0, terminal: 1, gui: 2 };
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case 'status': {
+                    // Running services first, then stopped, then non-services
+                    const aActive = a.program_type === 'service' && serviceStates[a.command_key]?.active;
+                    const bActive = b.program_type === 'service' && serviceStates[b.command_key]?.active;
+                    if (aActive !== bActive) return aActive ? -1 : 1;
+                    return a.name.localeCompare(b.name);
+                }
+                case 'recent': {
+                    const aTime = lastRun[a.id] || '';
+                    const bTime = lastRun[b.id] || '';
+                    if (aTime !== bTime) return aTime > bTime ? -1 : 1;
+                    return a.name.localeCompare(b.name);
+                }
+                case 'type': {
+                    const aType = typeOrder[a.program_type] ?? 3;
+                    const bType = typeOrder[b.program_type] ?? 3;
+                    if (aType !== bType) return aType - bType;
+                    return a.name.localeCompare(b.name);
+                }
+                case 'name':
+                default:
+                    return a.name.localeCompare(b.name);
+            }
         });
 
         if (filtered.length === 0) {
@@ -359,6 +410,13 @@
 
     // ── Event listeners ──
     function setupEventListeners() {
+        // Sort
+        sortSelect.addEventListener('change', (e) => {
+            sortBy = e.target.value;
+            saveState();
+            render();
+        });
+
         // Search
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value;

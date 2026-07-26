@@ -173,6 +173,15 @@
                     if (aType !== bType) return aType - bType;
                     return a.name.localeCompare(b.name);
                 }
+                case 'port': {
+                    const aPort = (a.program_type === 'service' && serviceStates[a.command_key]?.port) || 0;
+                    const bPort = (b.program_type === 'service' && serviceStates[b.command_key]?.port) || 0;
+                    // Services with port first (ascending), then no-port + non-services alphabetically
+                    if (aPort && bPort) return aPort - bPort;
+                    if (aPort && !bPort) return -1;
+                    if (!aPort && bPort) return 1;
+                    return a.name.localeCompare(b.name);
+                }
                 case 'name':
                 default:
                     return a.name.localeCompare(b.name);

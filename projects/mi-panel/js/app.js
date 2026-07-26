@@ -3,9 +3,11 @@
 
     const API_BASE = 'api';
     let allPrograms = [];
+    let serviceStates = {};  // { command_key: { active, memory, pid } }
     let activeType = 'all';
     let activeCategory = null;
     let searchQuery = '';
+    let currentLogsService = null;
 
     // ── DOM refs ──
     const grid         = document.getElementById('programsGrid');
@@ -16,6 +18,7 @@
     const catFilters   = document.getElementById('categoryFilters');
     const launchModal  = document.getElementById('launchModal');
     const historyModal = document.getElementById('historyModal');
+    const logsModal    = document.getElementById('logsModal');
 
     // ── Init ──
     async function init() {
@@ -31,6 +34,7 @@
             buildCategoryFilters();
             renderStats();
             render();
+            fetchAllServiceStatuses();
         } catch (e) {
             grid.innerHTML = '<div class="empty-state">Failed to load programs. Is the PHP server running?</div>';
         }
@@ -55,6 +59,23 @@
             <span><span class="stat-value">${terminals}</span> terminal</span>
             <span><span class="stat-value">${guis}</span> GUI</span>
         `;
+    }
+
+    // ── Fetch all service statuses ──
+    async function fetchAllServiceStatuses() {
+        const services = allPrograms.filter(p => p.program_type === 'service' && p.command_key);
+        const promises = services.map(async (p) => {
+            const key = p.command_key;
+            try {
+                const res = await fetch(`${API_BASE}/status.php?service=${encodeURIComponent(key)}`);
+                const data = await res.json();
+                serviceStates[key] = data;
+            } catch {
+                serviceStates[key] = { active: false, enabled: false, status: 'unknown' };
+            }
+        });
+        await Promise.allSettled(promises);
+        render();  // re-render with status data
     }
 
     // ── Render cards ──
@@ -83,6 +104,27 @@
             const canLaunch = p.command_key && p.program_type !== 'service';
             const isService = p.program_type === 'service';
 
+            let statusHtml = '';
+            let actionsHtml = '';
+
+            if (isService) {
+                const st = serviceStates[p.command_key] || null;
+                const isActive = st ? st.active : false;
+
+                statusHtml = `
+                    <div class="service-status" data-service="${esc(p.command_key || '')}">
+                        <span class="status-dot ${st ? (isActive ? 'status-active' : 'status-inactive') : 'status-loading'}"></span>
+                        <span class="status-text">${st ? (isActive ? 'Running' : 'Stopped') : 'Checking...'}</span>
+                        ${st && st.memory ? `<span class="status-mem">(${esc(st.memory)})</span>` : ''}
+                    </div>`;
+
+                actionsHtml = isActive
+                    ? `<button class="btn btn-stop" data-action="stop" data-service="${esc(p.command_key)}">Stop</button>
+                       <button class="btn btn-restart" data-action="restart" data-service="${esc(p.command_key)}">Restart</button>`
+                    : `<button class="btn btn-launch" data-action="start" data-service="${esc(p.command_key)}">Start</button>`;
+                actionsHtml += `<button class="btn btn-logs" data-service="${esc(p.command_key)}" data-program-name="${esc(p.name)}">Logs</button>`;
+            }
+
             return `
                 <div class="program-card" data-id="${p.id}">
                     <div class="card-header">
@@ -92,56 +134,58 @@
                         </div>
                     </div>
                     <div class="card-notes">${esc(p.notes || '')}</div>
-                    ${isService ? `<div class="service-status" data-service="${esc(p.command_key || '')}">
-                        <span class="status-dot status-loading"></span>
-                        <span class="status-text">Checking...</span>
-                    </div>` : ''}
+                    ${statusHtml}
                     <div class="card-footer">
                         <span class="card-category">${esc(p.category)}</span>
                         <div class="card-actions">
                             <button class="btn btn-history" data-program-id="${p.id}" title="History">History</button>
                             ${canLaunch ? `<button class="btn btn-launch" data-program-id="${p.id}" data-cmd="${esc(p.command_key || '')}">Launch</button>` : ''}
-                            ${isService ? `<button class="btn btn-launch" data-program-id="${p.id}" data-cmd="${esc(p.command_key || '')}">Start</button>` : ''}
+                            ${actionsHtml}
                         </div>
                     </div>
                 </div>
             `;
         }).join('');
-
-        // Fetch service statuses
-        grid.querySelectorAll('.service-status').forEach(el => {
-            checkServiceStatus(el.dataset.service, el);
-        });
     }
 
-    // ── Check service status ──
-    async function checkServiceStatus(service, container) {
-        if (!service) return;
-        try {
-            const res = await fetch(`${API_BASE}/status.php?service=${encodeURIComponent(service)}`);
-            const data = await res.json();
-            const dot = container.querySelector('.status-dot');
-            const text = container.querySelector('.status-text');
+    // ── Service control (start/stop/restart) ──
+    async function controlService(action, serviceKey, btn) {
+        const origText = btn.textContent;
+        btn.classList.add('launching');
+        btn.textContent = `${action}...`;
 
-            dot.classList.remove('status-loading');
-            if (data.active) {
-                dot.classList.add('status-active');
-                text.textContent = 'Running';
-                if (data.memory) text.textContent += ` (${data.memory})`;
+        try {
+            const res = await fetch(`${API_BASE}/service-control.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ service: serviceKey, action }),
+            });
+            const data = await res.json();
+
+            if (data.error) {
+                showToast(`Error: ${data.error}`, 'error');
             } else {
-                dot.classList.add('status-inactive');
-                text.textContent = 'Stopped';
+                showToast(
+                    data.success
+                        ? `${serviceKey}: ${action} OK (${data.duration_ms}ms)`
+                        : `${serviceKey}: ${action} failed (exit ${data.exit_code})`,
+                    data.success ? 'success' : 'error'
+                );
+                // Update local state
+                serviceStates[serviceKey] = {
+                    ...serviceStates[serviceKey],
+                    active: data.new_status === 'active',
+                };
+                render();
             }
-        } catch {
-            const dot = container.querySelector('.status-dot');
-            const text = container.querySelector('.status-text');
-            dot.classList.remove('status-loading');
-            dot.classList.add('status-inactive');
-            text.textContent = 'Unknown';
+        } catch (e) {
+            showToast(`Service control failed: ${e.message}`, 'error');
+        } finally {
+            // render() already replaced the button, so no need to restore
         }
     }
 
-    // ── Launch program ──
+    // ── Launch program (non-service) ──
     async function launchProgram(programId, btn) {
         btn.classList.add('launching');
         btn.textContent = 'Running...';
@@ -169,7 +213,7 @@
             showToast(`Launch failed: ${e.message}`, 'error');
         } finally {
             btn.classList.remove('launching');
-            btn.textContent = btn.dataset.cmd ? 'Start' : 'Launch';
+            btn.textContent = 'Launch';
         }
     }
 
@@ -219,6 +263,47 @@
         historyModal.classList.add('open');
     }
 
+    // ── Show logs modal ──
+    async function showLogs(serviceKey, programName) {
+        currentLogsService = serviceKey;
+        document.getElementById('logsTitle').textContent = `Logs — ${programName}`;
+        await loadLogs(serviceKey);
+        logsModal.classList.add('open');
+    }
+
+    async function loadLogs(serviceKey) {
+        const lines = document.getElementById('logsLines').value;
+        const output = document.getElementById('logsOutput');
+        const meta = document.getElementById('logsMeta');
+
+        output.textContent = 'Loading...';
+        meta.innerHTML = '';
+
+        try {
+            const res = await fetch(`${API_BASE}/logs.php?service=${encodeURIComponent(serviceKey)}&lines=${lines}`);
+            const data = await res.json();
+
+            if (data.error) {
+                output.textContent = `Error: ${data.error}`;
+                return;
+            }
+
+            meta.innerHTML = `
+                <span>Source: <strong>${esc(data.source)}</strong></span>
+                ${data.log_file ? `<span>File: <strong>${esc(data.log_file)}</strong></span>` : ''}
+                <span>View with:</span>
+                <code class="meta-cmd" title="Click to copy" data-copy="${esc(data.view_command)}">${esc(data.view_command)}</code>
+            `;
+
+            output.textContent = data.log || '(no log entries)';
+
+            // Scroll to bottom
+            output.scrollTop = output.scrollHeight;
+        } catch (e) {
+            output.textContent = `Failed to load logs: ${e.message}`;
+        }
+    }
+
     // ── Toast notification ──
     function showToast(msg, type = 'success') {
         const toast = document.createElement('div');
@@ -263,36 +348,75 @@
 
         // Card actions (delegated)
         grid.addEventListener('click', (e) => {
-            const launchBtn = e.target.closest('.btn-launch');
+            // Service control: start/stop/restart
+            const svcBtn = e.target.closest('.btn-stop, .btn-restart, .btn-launch[data-action]');
+            if (svcBtn && svcBtn.dataset.action) {
+                controlService(svcBtn.dataset.action, svcBtn.dataset.service, svcBtn);
+                return;
+            }
+
+            // Logs button
+            const logsBtn = e.target.closest('.btn-logs');
+            if (logsBtn) {
+                showLogs(logsBtn.dataset.service, logsBtn.dataset.programName);
+                return;
+            }
+
+            // Launch (non-service)
+            const launchBtn = e.target.closest('.btn-launch[data-program-id]');
             if (launchBtn) {
                 launchProgram(parseInt(launchBtn.dataset.programId), launchBtn);
                 return;
             }
+
+            // History
             const histBtn = e.target.closest('.btn-history');
             if (histBtn) {
                 showHistory(parseInt(histBtn.dataset.programId));
             }
         });
 
+        // Logs refresh
+        document.getElementById('logsRefresh').addEventListener('click', () => {
+            if (currentLogsService) loadLogs(currentLogsService);
+        });
+        document.getElementById('logsLines').addEventListener('change', () => {
+            if (currentLogsService) loadLogs(currentLogsService);
+        });
+
+        // Copy log command
+        document.getElementById('logsMeta').addEventListener('click', (e) => {
+            const cmd = e.target.closest('.meta-cmd');
+            if (cmd) {
+                navigator.clipboard.writeText(cmd.dataset.copy).then(() => {
+                    showToast('Command copied to clipboard', 'success');
+                });
+            }
+        });
+
         // Close modals
         document.getElementById('modalClose').addEventListener('click', () => launchModal.classList.remove('open'));
         document.getElementById('historyClose').addEventListener('click', () => historyModal.classList.remove('open'));
+        document.getElementById('logsClose').addEventListener('click', () => logsModal.classList.remove('open'));
         launchModal.addEventListener('click', (e) => { if (e.target === launchModal) launchModal.classList.remove('open'); });
         historyModal.addEventListener('click', (e) => { if (e.target === historyModal) historyModal.classList.remove('open'); });
+        logsModal.addEventListener('click', (e) => { if (e.target === logsModal) logsModal.classList.remove('open'); });
 
         // Escape key closes modals
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 launchModal.classList.remove('open');
                 historyModal.classList.remove('open');
+                logsModal.classList.remove('open');
             }
         });
     }
 
     // ── Helper: escape HTML ──
     function esc(str) {
+        if (str == null) return '';
         const div = document.createElement('div');
-        div.textContent = str;
+        div.textContent = String(str);
         return div.innerHTML;
     }
 

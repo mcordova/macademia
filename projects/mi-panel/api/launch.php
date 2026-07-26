@@ -36,6 +36,13 @@ if (!$program) {
     exit;
 }
 
+// Services must use service-control.php instead
+if ($program['program_type'] === 'service') {
+    http_response_code(400);
+    echo json_encode(['error' => 'Services must use service-control.php']);
+    exit;
+}
+
 $cmdKey = $program['command_key'];
 if (!$cmdKey || !is_whitelisted($cmdKey)) {
     http_response_code(403);
@@ -49,18 +56,7 @@ if (!$cmdKey || !is_whitelisted($cmdKey)) {
 $whitelistEntry = COMMAND_WHITELIST[$cmdKey];
 
 // Build the command
-if ($program['program_type'] === 'service') {
-    $serviceMap = [
-        'ollama'     => 'ollama',
-        'litellm'    => 'litellm',
-        'jenkins'    => 'jenkins',
-        'postgresql' => 'postgresql',
-        'apache2'    => 'apache2',
-        'cups'       => 'cups',
-    ];
-    $serviceName = $serviceMap[$cmdKey] ?? $cmdKey;
-    $command = 'systemctl start ' . escapeshellarg($serviceName);
-} elseif ($whitelistEntry['args'] !== null) {
+if ($whitelistEntry['args'] !== null) {
     $command = $whitelistEntry['cmd'] . ' ' . implode(' ', array_map('escapeshellarg', $whitelistEntry['args']));
 } else {
     $command = $whitelistEntry['cmd'];

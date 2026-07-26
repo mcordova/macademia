@@ -4,7 +4,7 @@ declare(strict_types=1);
 define('PROJECT_ROOT', __DIR__ . '/..');
 define('DATA_DIR', PROJECT_ROOT . '/data');
 
-// Whitelist: solo estos comandos pueden ejecutarse desde el panel.
+// Whitelist: solo estos comandos pueden ejecutarse desde el panel (solo apps, NO servicios).
 // 'cmd' = comando del sistema, 'args' = argumentos permitidos (null = sin restricción)
 define('COMMAND_WHITELIST', [
     // Editors
@@ -42,19 +42,27 @@ define('COMMAND_WHITELIST', [
 
     // GIS
     'qgis'              => ['cmd' => 'qgis',              'args' => null],
+]);
 
-    // Services (systemctl)
-    'ollama'            => ['cmd' => 'systemctl', 'args' => ['start', 'ollama']],
-    'litellm'           => ['cmd' => 'systemctl', 'args' => ['start', 'litellm']],
-    'jenkins'           => ['cmd' => 'systemctl', 'args' => ['start', 'jenkins']],
-    'postgresql'        => ['cmd' => 'systemctl', 'args' => ['start', 'postgresql']],
-    'apache2'           => ['cmd' => 'systemctl', 'args' => ['start', 'apache2']],
-    'cups'              => ['cmd' => 'systemctl', 'args' => ['start', 'cups']],
+// Service definitions: maps command_key => systemd unit name.
+// Used by service-control.php and logs.php.
+define('SERVICES', [
+    'ollama'     => ['unit' => 'ollama',      'log_unit' => 'ollama'],
+    'litellm'    => ['unit' => 'litellm',     'log_unit' => 'litellm'],
+    'jenkins'    => ['unit' => 'jenkins',     'log_unit' => 'jenkins'],
+    'postgresql' => ['unit' => 'postgresql',  'log_unit' => 'postgresql'],
+    'apache2'    => ['unit' => 'apache2',     'log_unit' => 'apache2'],
+    'cups'       => ['unit' => 'cups',        'log_unit' => 'cups'],
 ]);
 
 // Helper: check if a command key is whitelisted
 function is_whitelisted(string $key): bool {
     return isset(COMMAND_WHITELIST[$key]);
+}
+
+// Helper: check if a key is a known service
+function is_service(string $key): bool {
+    return isset(SERVICES[$key]);
 }
 
 // CORS: allow local dev (only in web context)

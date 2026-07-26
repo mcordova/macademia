@@ -44,15 +44,17 @@ define('COMMAND_WHITELIST', [
     'qgis'              => ['cmd' => 'qgis',              'args' => null],
 ]);
 
-// Service definitions: maps command_key => systemd unit name.
-// Used by service-control.php and logs.php.
+// Service definitions: maps command_key => systemd unit name + optional web port.
+// Used by service-control.php, logs.php, and status.php.
+// 'port' = web UI port (null = no web interface).
+// 'url_path' = path beyond root (default '/').
 define('SERVICES', [
-    'ollama'     => ['unit' => 'ollama',      'log_unit' => 'ollama'],
-    'litellm'    => ['unit' => 'litellm',     'log_unit' => 'litellm'],
-    'jenkins'    => ['unit' => 'jenkins',     'log_unit' => 'jenkins'],
-    'postgresql' => ['unit' => 'postgresql',  'log_unit' => 'postgresql'],
-    'apache2'    => ['unit' => 'apache2',     'log_unit' => 'apache2'],
-    'cups'       => ['unit' => 'cups',        'log_unit' => 'cups'],
+    'ollama'     => ['unit' => 'ollama',      'log_unit' => 'ollama',   'port' => 11434,  'url_path' => '/'],
+    'litellm'    => ['unit' => 'litellm',     'log_unit' => 'litellm',  'port' => 4000,   'url_path' => '/'],
+    'jenkins'    => ['unit' => 'jenkins',     'log_unit' => 'jenkins',  'port' => 8080,   'url_path' => '/'],
+    'postgresql' => ['unit' => 'postgresql',  'log_unit' => 'postgresql','port' => null,  'url_path' => null],
+    'apache2'    => ['unit' => 'apache2',     'log_unit' => 'apache2',  'port' => 80,     'url_path' => '/'],
+    'cups'       => ['unit' => 'cups',        'log_unit' => 'cups',     'port' => 631,    'url_path' => '/'],
 ]);
 
 // Helper: check if a command key is whitelisted

@@ -269,6 +269,15 @@ main {
 .btn-history {
     color: var(--text-dim);
 }
+.btn-open {
+    background: rgba(88,166,255,.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+}
+.btn-open:hover {
+    background: rgba(88,166,255,.2);
+}
 
 /* Service status */
 .service-status {

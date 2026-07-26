@@ -47,6 +47,13 @@ if ($isActive && $mainPid && $mainPid !== '0') {
     }
 }
 
+$port = null;
+$urlPath = '/';
+if (is_service($service)) {
+    $port = SERVICES[$service]['port'];
+    $urlPath = SERVICES[$service]['url_path'] ?? '/';
+}
+
 echo json_encode([
     'service'  => $service,
     'active'   => $isActive,
@@ -54,6 +61,8 @@ echo json_encode([
     'status'   => trim(implode("\n", $activeOutput)),
     'pid'      => ($mainPid !== '0' && $mainPid !== '') ? $mainPid : null,
     'memory'   => $memoryUsage,
+    'port'     => $port,
+    'url_path' => $urlPath,
 ]);
 
 function format_bytes(int $bytes): string {

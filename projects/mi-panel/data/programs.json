@@ -8,7 +8,7 @@
         "notes": "GPU-accelerated terminal emulator",
         "id": 1,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Zsh",
@@ -19,7 +19,7 @@
         "notes": "Primary shell (launch via terminal)",
         "id": 2,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Bat",
@@ -30,7 +30,7 @@
         "notes": "cat clone with syntax highlighting",
         "id": 3,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Eza",
@@ -41,7 +41,7 @@
         "notes": "Modern ls replacement",
         "id": 4,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Ripgrep",
@@ -52,7 +52,7 @@
         "notes": "Fast grep replacement",
         "id": 5,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Screen",
@@ -63,7 +63,7 @@
         "notes": "Terminal multiplexer",
         "id": 6,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Vim",
@@ -74,7 +74,7 @@
         "notes": "Terminal text editor",
         "id": 7,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Sublime Text",
@@ -85,7 +85,7 @@
         "notes": "GUI text editor",
         "id": 8,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "VS Code",
@@ -96,7 +96,7 @@
         "notes": "Visual Studio Code",
         "id": 9,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Cursor",
@@ -107,7 +107,7 @@
         "notes": "AI-powered code editor",
         "id": 10,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Git",
@@ -118,7 +118,7 @@
         "notes": "Version control",
         "id": 11,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Make",
@@ -129,7 +129,7 @@
         "notes": "Build automation",
         "id": 12,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Cargo",
@@ -140,7 +140,7 @@
         "notes": "Rust package manager",
         "id": 13,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Rustc",
@@ -151,7 +151,7 @@
         "notes": "Rust compiler",
         "id": 14,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Go",
@@ -162,7 +162,7 @@
         "notes": "Go compiler",
         "id": 15,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Node.js",
@@ -173,7 +173,7 @@
         "notes": "JavaScript runtime",
         "id": 16,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "npm",
@@ -184,7 +184,7 @@
         "notes": "Node.js package manager",
         "id": 17,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "OpenJDK 21",
@@ -195,7 +195,7 @@
         "notes": "Java runtime",
         "id": 18,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Symfony CLI",
@@ -206,7 +206,7 @@
         "notes": "Symfony PHP framework CLI",
         "id": 19,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "OpenCode",
@@ -217,7 +217,7 @@
         "notes": "AI coding assistant",
         "id": 20,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "PHP 8.3",
@@ -228,7 +228,7 @@
         "notes": "PHP runtime \/ CLI",
         "id": 21,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Python 3.12",
@@ -239,7 +239,7 @@
         "notes": "Python interpreter",
         "id": 22,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "pip",
@@ -250,7 +250,7 @@
         "notes": "Python package installer",
         "id": 23,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Docker",
@@ -261,7 +261,7 @@
         "notes": "Docker Engine",
         "id": 24,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Docker Compose",
@@ -272,7 +272,7 @@
         "notes": "Docker Compose v2",
         "id": 25,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "VirtualBox",
@@ -283,7 +283,7 @@
         "notes": "Virtualization platform",
         "id": 26,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "PostgreSQL 16",
@@ -294,7 +294,7 @@
         "notes": "PostgreSQL database server",
         "id": 27,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "LiteLLM DB",
@@ -305,7 +305,7 @@
         "notes": "PostgreSQL for LiteLLM (Docker)",
         "id": 28,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Brave Browser",
@@ -316,7 +316,7 @@
         "notes": "Privacy-focused Chromium browser",
         "id": 29,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "OBS Studio",
@@ -327,7 +327,7 @@
         "notes": "Screen recording \/ streaming",
         "id": 30,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "guvcview",
@@ -338,7 +338,7 @@
         "notes": "Webcam viewer \/ capture",
         "id": 31,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "PDF Chain",
@@ -349,7 +349,7 @@
         "notes": "PDF editing tool",
         "id": 32,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "htop",
@@ -360,7 +360,7 @@
         "notes": "Interactive process viewer",
         "id": 33,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "btop",
@@ -371,7 +371,7 @@
         "notes": "Resource monitor (fancy htop)",
         "id": 34,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Psensor",
@@ -382,7 +382,7 @@
         "notes": "Hardware temperature monitor",
         "id": 35,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "GParted",
@@ -393,7 +393,7 @@
         "notes": "Partition editor",
         "id": 36,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "jq",
@@ -404,7 +404,7 @@
         "notes": "JSON processor",
         "id": 37,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "lnav",
@@ -415,7 +415,7 @@
         "notes": "Log file navigator",
         "id": 38,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "ClipIt",
@@ -426,7 +426,7 @@
         "notes": "Lightweight clipboard manager",
         "id": 39,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "QGIS",
@@ -437,7 +437,7 @@
         "notes": "GIS desktop application",
         "id": 40,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Ollama",
@@ -448,7 +448,7 @@
         "notes": "Local LLM inference server",
         "id": 41,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "LiteLLM",
@@ -459,7 +459,7 @@
         "notes": "LLM proxy (routes to Ollama)",
         "id": 42,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Apache2",
@@ -470,7 +470,7 @@
         "notes": "HTTP\/HTTPS server",
         "id": 43,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "Jenkins",
@@ -481,7 +481,7 @@
         "notes": "CI\/CD server on port 8080",
         "id": 44,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     },
     {
         "name": "CUPS",
@@ -492,6 +492,6 @@
         "notes": "Print scheduler",
         "id": 45,
         "enabled": 1,
-        "created_at": "2026-07-26 11:22:21"
+        "created_at": "2026-07-26 10:31:28"
     }
 ]

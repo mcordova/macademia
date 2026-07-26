@@ -110,6 +110,7 @@
             if (isService) {
                 const st = serviceStates[p.command_key] || null;
                 const isActive = st ? st.active : false;
+                const hasPort = st && st.port;
 
                 statusHtml = `
                     <div class="service-status" data-service="${esc(p.command_key || '')}">
@@ -123,6 +124,12 @@
                        <button class="btn btn-restart" data-action="restart" data-service="${esc(p.command_key)}">Restart</button>`
                     : `<button class="btn btn-launch" data-action="start" data-service="${esc(p.command_key)}">Start</button>`;
                 actionsHtml += `<button class="btn btn-logs" data-service="${esc(p.command_key)}" data-program-name="${esc(p.name)}">Logs</button>`;
+
+                // Web link when running and has a port
+                if (isActive && hasPort) {
+                    const url = `http://localhost:${st.port}${st.url_path || '/'}`;
+                    actionsHtml += `<a class="btn btn-open" href="${esc(url)}" target="_blank" rel="noopener" title="Open in new tab">Open</a>`;
+                }
             }
 
             return `

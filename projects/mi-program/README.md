@@ -1,30 +1,15 @@
 # mi-program
 
-Multi-language programming exercises. Each exercise is implemented in **Bash**, **Python**, **C**, **Go**, and **Rust** so the same logic can be compared across languages.
+Ejercicios de programación en múltiples lenguajes. Cada ejercicio está implementado en **Bash**, **Python**, **C**, **Go** y **Rust** para comparar cómo cada lenguaje resuelve el mismo problema.
 
-## Index
+Los detalles de ejecución están en el `README.md` de cada ejercicio.
 
-| # | Exercise | What it demonstrates |
-|---|----------|---------------------|
-| [000](000-hello/) | Hello, World! | Minimal program — stdout, boilerplate, compilation vs interpretation |
-| [001](001-greet/) | Greet | Stdin input, string interpolation, trimming newlines |
-| [002](002-table/) | Multiplication table (2×) | Explicit repetition without loops (educational — shows why loops exist) |
-| [003](003-add/) | Add | Input validation, error handling, exit codes |
-| [005](005-loops/) | Loops | `for`/`while` loops, CLI arguments, retry-until-valid pattern, integer overflow awareness |
+## Índice
 
-## How to run
-
-```bash
-# each exercise has its own instructions
-cd 000-hello && cat README.md
-```
-
-## Languages covered
-
-| Language | Run command | Typical file |
-|----------|-------------|--------------|
-| Bash | `bash <dir>/bash/<name>.sh` | `.sh` |
-| Python | `python3 <dir>/python/<name>.py` | `.py` |
-| C | `gcc -o <name> <dir>/c/<name>.c && ./<name>` | `.c` |
-| Go | `go run <dir>/go/<name>.go` | `.go` |
-| Rust | `cd <dir>/rust && cargo run` | `src/main.rs` |
+| # | Ejercicio | Conceptos |
+|---|-----------|-----------|
+| [000](000-hello/) | Hello, World! | Programa mínimo — stdout, boilerplate, compilación vs interpretación |
+| [001](001-greet/) | Saludo personalizado | Entrada stdin, interpolación de cadenas, trimming de newlines |
+| [002](002-table/) | Tabla de multiplicar (2×) | Repetición explícita sin bucles — muestra por qué existen los bucles |
+| [003](003-add/) | Suma +1 | Validación de entrada, manejo de errores, códigos de salida |
+| [005](005-loops/) | Tabla de multiplicar con bucle | Bucles `for`/`while`, argumentos CLI, patrón reintento-hasta-válido, desbordamiento de enteros |

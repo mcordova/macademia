@@ -321,10 +321,10 @@
     {
         "name": "LiteLLM DB",
         "package": null,
-        "command_key": null,
+        "command_key": "litellm_db",
         "category": "Databases",
         "program_type": "docker",
-        "notes": "PostgreSQL for LiteLLM (Docker)",
+        "notes": "PostgreSQL for LiteLLM (Docker container)",
         "id": 28,
         "enabled": 1,
         "created_at": "2026-07-26 10:31:28"

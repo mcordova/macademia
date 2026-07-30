@@ -62,7 +62,8 @@ define('SERVICES', [
 // Used by status.php, service-control.php, and logs.php.
 // 'container' = docker container name.
 define('DOCKER', [
-    'postgresql' => ['container' => 'postgresql',  'port' => 5432,  'url_path' => null],
+    'postgresql' => ['container' => 'postgresql',       'port' => 5432,  'url_path' => null],
+    'litellm_db' => ['container' => 'litellm-db',  'port' => null,  'url_path' => null],
 ]);
 
 // Helper: check if a command key is whitelisted

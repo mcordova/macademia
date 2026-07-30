@@ -16,5 +16,59 @@
         "exit_code": 2,
         "output": "GParted 1.5.0\nconfiguration --enable-libparted-dmraid --enable-online-resize\nlibparted 3.6",
         "duration_ms": 136265345
+    },
+    {
+        "id": 3,
+        "program_id": 44,
+        "executed_at": "2026-07-30 12:01:04",
+        "command_run": "systemctl stop jenkins",
+        "exit_code": 0,
+        "output": null,
+        "duration_ms": 5836
+    },
+    {
+        "id": 4,
+        "program_id": 27,
+        "executed_at": "2026-07-30 12:02:13",
+        "command_run": "systemctl restart postgresql",
+        "exit_code": 0,
+        "output": null,
+        "duration_ms": 5364
+    },
+    {
+        "id": 5,
+        "program_id": 27,
+        "executed_at": "2026-07-30 14:25:44",
+        "command_run": "docker start postgresql",
+        "exit_code": 1,
+        "output": "Error response from daemon: No such container: postgresql\nfailed to start containers: postgresql",
+        "duration_ms": 9
+    },
+    {
+        "id": 6,
+        "program_id": 27,
+        "executed_at": "2026-07-30 17:46:43",
+        "command_run": "docker start postgresql",
+        "exit_code": 1,
+        "output": "Error response from daemon: No such container: postgresql\nfailed to start containers: postgresql",
+        "duration_ms": 16
+    },
+    {
+        "id": 7,
+        "program_id": 25,
+        "executed_at": "2026-07-30 17:47:21",
+        "command_run": "docker 'ps'",
+        "exit_code": 0,
+        "output": "CONTAINER ID   IMAGE         COMMAND                  CREATED       STATUS        PORTS                                         NAMES\n34545d95a3b1   postgres:16   \"docker-entrypoint.s…\"   2 weeks ago   Up 26 hours   0.0.0.0:5433->5432\/tcp, [::]:5433->5432\/tcp   litellm-db",
+        "duration_ms": 23
+    },
+    {
+        "id": 8,
+        "program_id": 25,
+        "executed_at": "2026-07-30 17:50:05",
+        "command_run": "docker 'ps'",
+        "exit_code": 0,
+        "output": "CONTAINER ID   IMAGE         COMMAND                  CREATED       STATUS        PORTS                                         NAMES\n34545d95a3b1   postgres:16   \"docker-entrypoint.s…\"   2 weeks ago   Up 26 hours   0.0.0.0:5433->5432\/tcp, [::]:5433->5432\/tcp   litellm-db",
+        "duration_ms": 21
     }
 ]

@@ -1,6 +1,6 @@
 # mi-program
 
-Ejercicios de programación en múltiples lenguajes. Cada ejercicio está implementado en **Bash**, **Python**, **C**, **Go** y **Rust** para comparar cómo cada lenguaje resuelve el mismo problema.
+Ejercicios de programación en múltiples lenguajes. Cada ejercicio está implementado en **Bash**, **Python**, **C**, **Go**, **Rust** y **PHP** para comparar cómo cada lenguaje resuelve el mismo problema.
 
 Los detalles de ejecución están en el `README.md` de cada ejercicio.
 

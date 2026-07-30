@@ -34,6 +34,12 @@ go run go/greet.go
 cd rust && cargo run
 ```
 
+### PHP
+
+```bash
+php php/greet.php
+```
+
 ## Example
 
 ```

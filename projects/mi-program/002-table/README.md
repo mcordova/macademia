@@ -37,6 +37,12 @@ go run go/table.go
 cd rust && cargo run
 ```
 
+### PHP
+
+```bash
+php php/table.php
+```
+
 ## Output
 
 ```

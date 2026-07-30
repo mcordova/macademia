@@ -56,6 +56,12 @@ go run go/loops.go [number]
 cd rust && cargo run -- [number]
 ```
 
+### PHP
+
+```bash
+php php/loops.php [number]
+```
+
 ## Example
 
 ```

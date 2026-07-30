@@ -676,6 +676,16 @@ main {
     border-bottom: 2px solid var(--border);
     white-space: nowrap;
 }
+.admin-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+.admin-table th.sortable:hover {
+    color: var(--text);
+}
+.sort-arrow {
+    font-size: 0.7rem;
+}
 .admin-table td {
     padding: 0.4rem 0.6rem;
     border-bottom: 1px solid var(--border);

@@ -230,8 +230,8 @@
                         : `<button class="btn btn-launch" data-action="start" data-service="${esc(p.command_key)}">Start</button>`;
                     actionsHtml += `<button class="btn btn-logs" data-service="${esc(p.command_key)}" data-program-name="${esc(p.name)}">Logs</button>`;
 
-                    // Web link when running and has a port
-                    if (isActive && hasPort) {
+                    // Web link when running, has a port, and has a web UI
+                    if (isActive && hasPort && st.url_path !== null) {
                         const url = `http://localhost:${st.port}${st.url_path || '/'}`;
                         actionsHtml += `<a class="btn btn-open" href="${esc(url)}" target="_blank" rel="noopener" title="Open in new tab">Open</a>`;
                     }

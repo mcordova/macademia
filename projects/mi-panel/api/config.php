@@ -52,7 +52,7 @@ define('SERVICES', [
     'ollama'     => ['unit' => 'ollama',      'log_unit' => 'ollama',   'port' => 11434,  'url_path' => '/'],
     'litellm'    => ['unit' => 'litellm',     'log_unit' => 'litellm',  'port' => 4000,   'url_path' => '/'],
     'jenkins'    => ['unit' => 'jenkins',     'log_unit' => 'jenkins',  'port' => 8080,   'url_path' => '/'],
-    'postgresql' => ['unit' => 'postgresql',  'log_unit' => 'postgresql','port' => null,  'url_path' => null],
+    'postgresql' => ['unit' => 'postgresql',  'log_unit' => 'postgresql','port' => 5432,  'url_path' => null],
     'apache2'    => ['unit' => 'apache2',     'log_unit' => 'apache2',  'port' => 80,     'url_path' => '/'],
     'cups'       => ['unit' => 'cups',        'log_unit' => 'cups',     'port' => 631,    'url_path' => '/'],
 ]);

@@ -111,6 +111,11 @@
 
 ---
 
+
+## AI
+
+/local-ai run --address=0.0.0.0:8081 
+
 ## Adding a New Service
 
 When installing a new service, update this file:

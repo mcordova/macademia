@@ -3,6 +3,8 @@
 
     const API = 'api/admin.php';
     let allPrograms = [];
+    let sortBy = 'id';
+    let sortDir = 1; // 1 asc, -1 desc
 
     // ── DOM refs ──
     const tbody     = document.getElementById('adminBody');
@@ -49,6 +51,21 @@
         const filtered = allPrograms.filter(p => {
             if (!q) return true;
             return `${p.name} ${p.package || ''} ${p.command_key || ''} ${p.category} ${p.notes || ''}`.toLowerCase().includes(q);
+        });
+
+        filtered.sort((a, b) => {
+            let va, vb;
+            switch (sortBy) {
+                case 'id': va = a.id; vb = b.id; break;
+                case 'name': va = a.name.toLowerCase(); vb = b.name.toLowerCase(); break;
+                case 'category': va = a.category.toLowerCase(); vb = b.category.toLowerCase(); break;
+                case 'type': va = a.program_type; vb = b.program_type; break;
+                case 'enabled': va = a.enabled ? 1 : 0; vb = b.enabled ? 1 : 0; break;
+                default: return (a.id - b.id) * sortDir;
+            }
+            if (va < vb) return -1 * sortDir;
+            if (va > vb) return 1 * sortDir;
+            return 0;
         });
 
         if (filtered.length === 0) {
@@ -227,6 +244,27 @@
         btnAdd.addEventListener('click', () => openEdit(null));
 
         btnScan.addEventListener('click', scanSystem);
+
+        // Sort by column (delegated on thead)
+        document.querySelector('#adminTable thead').addEventListener('click', (e) => {
+            const th = e.target.closest('th[data-sort]');
+            if (!th) return;
+            const key = th.dataset.sort;
+            if (sortBy === key) {
+                sortDir *= -1;
+            } else {
+                sortBy = key;
+                sortDir = 1;
+            }
+            // Update arrow indicators
+            document.querySelectorAll('#adminTable thead th[data-sort]').forEach(t => {
+                const arrow = t.querySelector('.sort-arrow');
+                if (arrow) arrow.textContent = '';
+            });
+            const arrow = th.querySelector('.sort-arrow');
+            if (arrow) arrow.textContent = sortDir === 1 ? ' \u25B4' : ' \u25BE';
+            render();
+        });
 
         // Toggle enabled (delegated)
         tbody.addEventListener('change', (e) => {

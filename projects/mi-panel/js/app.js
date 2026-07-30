@@ -386,6 +386,7 @@
 
     async function loadLogs(serviceKey) {
         const lines = document.getElementById('logsLines').value;
+        const colorize = document.getElementById('logsColorize').checked;
         const output = document.getElementById('logsOutput');
         const meta = document.getElementById('logsMeta');
 
@@ -393,7 +394,9 @@
         meta.innerHTML = '';
 
         try {
-            const res = await fetch(`${API_BASE}/logs.php?service=${encodeURIComponent(serviceKey)}&lines=${lines}`);
+            const params = new URLSearchParams({ service: serviceKey, lines: String(lines) });
+            if (colorize) params.set('colorize', '1');
+            const res = await fetch(`${API_BASE}/logs.php?${params}`);
             const data = await res.json();
 
             if (data.error) {
@@ -408,7 +411,11 @@
                 <code class="meta-cmd" title="Click to copy" data-copy="${esc(data.view_command)}">${esc(data.view_command)}</code>
             `;
 
-            output.textContent = data.log || '(no log entries)';
+            if (data.content_type === 'html') {
+                output.innerHTML = data.log || '(no log entries)';
+            } else {
+                output.textContent = data.log || '(no log entries)';
+            }
 
             // Scroll to bottom
             output.scrollTop = output.scrollHeight;
@@ -511,6 +518,9 @@
             if (currentLogsService) loadLogs(currentLogsService);
         });
         document.getElementById('logsLines').addEventListener('change', () => {
+            if (currentLogsService) loadLogs(currentLogsService);
+        });
+        document.getElementById('logsColorize').addEventListener('change', () => {
             if (currentLogsService) loadLogs(currentLogsService);
         });
 

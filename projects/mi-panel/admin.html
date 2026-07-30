@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Panel — Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>
+                <a class="back-icon" href="index.html" title="Volver al panel">&#x2039;</a>
+                Mi Panel
+                <span style="font-size:0.6rem;font-weight:400;color:var(--yellow);margin-left:0.5rem;">Admin</span>
+            </h1>
+            <p class="subtitle">Manage programs, cards & scan for new packages</p>
+        </div>
+        <div class="header-stats" id="stats"></div>
+    </header>
+
+    <nav class="filters">
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search programs..." autocomplete="off">
+        </div>
+        <div class="admin-actions">
+            <button class="btn btn-primary" id="btnAdd">+ Add New</button>
+            <button class="btn btn-scan" id="btnScan">Scan System</button>
+            <a class="btn btn-back" href="index.html">Main Panel</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="table-wrap">
+            <table class="admin-table" id="adminTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Package</th>
+                        <th>Command Key</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Notes</th>
+                        <th>Enabled</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminBody"></tbody>
+            </table>
+        </div>
+        <div class="empty-state" id="emptyState" style="display:none;">No programs found.</div>
+    </main>
+
+    <!-- Scan results modal -->
+    <div class="modal-overlay" id="scanModal">
+        <div class="modal modal-wide">
+            <div class="modal-header">
+                <h2>Scan Results</h2>
+                <button class="modal-close" id="scanClose">&times;</button>
+            </div>
+            <div class="modal-body" id="scanBody"></div>
+        </div>
+    </div>
+
+    <!-- Edit / Add modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="editTitle">Add Program</h2>
+                <button class="modal-close" id="editClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" class="admin-form">
+                    <input type="hidden" id="editId">
+                    <label>Name <input type="text" id="editName" required></label>
+                    <label>Package <input type="text" id="editPackage"></label>
+                    <label>Command Key <input type="text" id="editCommandKey"></label>
+                    <label>Category <input type="text" id="editCategory" list="catList"></label>
+                    <datalist id="catList"></datalist>
+                    <label>Type
+                        <select id="editType" required>
+                            <option value="service">Service</option>
+                            <option value="terminal">Terminal</option>
+                            <option value="gui">GUI</option>
+                        </select>
+                    </label>
+                    <label>Notes <textarea id="editNotes" rows="2"></textarea></label>
+                    <label class="admin-checkbox">
+                        <input type="checkbox" id="editEnabled" checked>
+                        Enabled
+                    </label>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="editSave">Save</button>
+                        <button type="button" class="btn" id="editCancel">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm delete modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width:400px;">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <button class="modal-close" id="deleteClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteText">Delete this program?</p>
+                <div class="form-actions" style="margin-top:1rem;">
+                    <button class="btn btn-danger" id="deleteConfirm">Delete</button>
+                    <button class="btn" id="deleteCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toasts"></div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -585,6 +585,224 @@ main {
     font-size: 0.9rem;
 }
 
+/* ── Back icon ── */
+.back-icon {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-right: 0.25rem;
+    transition: color .2s;
+    vertical-align: middle;
+    line-height: 1;
+}
+.back-icon:hover {
+    color: var(--accent);
+}
+
+/* ── Admin icon ── */
+.admin-icon {
+    color: var(--text-dim);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+    transition: color .2s, transform .2s;
+}
+.admin-icon:hover {
+    color: var(--accent);
+    transform: rotate(60deg);
+}
+
+/* ── Admin page ── */
+.admin-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.btn-primary {
+    background: rgba(88,166,255,.15);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.btn-primary:hover {
+    background: rgba(88,166,255,.25);
+}
+.btn-scan {
+    background: rgba(210,153,34,.1);
+    border-color: var(--yellow);
+    color: var(--yellow);
+}
+.btn-scan:hover {
+    background: rgba(210,153,34,.2);
+}
+.btn-back {
+    color: var(--text-dim);
+    text-decoration: none;
+}
+.btn-back:hover {
+    color: var(--text);
+    background: var(--bg-card-hover);
+}
+.btn-danger {
+    background: rgba(248,81,73,.1);
+    border-color: var(--red);
+    color: var(--red);
+}
+.btn-danger:hover {
+    background: rgba(248,81,73,.2);
+}
+.btn-sm {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+}
+
+/* Admin table */
+.table-wrap {
+    overflow-x: auto;
+}
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+.admin-table th {
+    text-align: left;
+    color: var(--text-dim);
+    font-weight: 500;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+}
+.admin-table td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+.admin-table tbody tr:hover {
+    background: var(--bg-card-hover);
+}
+.admin-table tbody tr.row-disabled {
+    opacity: 0.5;
+}
+.admin-table .cell-id {
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    width: 40px;
+}
+.admin-table .cell-notes {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-dim);
+}
+.admin-table .cell-actions {
+    white-space: nowrap;
+    width: 120px;
+}
+.admin-table code {
+    font-family: 'SF Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+}
+.admin-table .error-cell {
+    text-align: center;
+    padding: 2rem;
+    color: var(--red);
+}
+
+/* Toggle switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    cursor: pointer;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 20px;
+    transition: background .2s;
+}
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    bottom: 2px;
+    background: var(--text);
+    border-radius: 50%;
+    transition: transform .2s;
+}
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--green);
+}
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(16px);
+}
+
+/* Admin form */
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.admin-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    outline: none;
+    font-family: inherit;
+}
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+    border-color: var(--accent);
+}
+.admin-form textarea {
+    resize: vertical;
+}
+.admin-checkbox {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.5rem !important;
+    cursor: pointer;
+}
+.admin-checkbox input[type="checkbox"] {
+    accent-color: var(--accent);
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
     header, .filters, main { padding-left: 1rem; padding-right: 1rem; }

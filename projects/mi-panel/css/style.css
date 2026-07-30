@@ -407,6 +407,10 @@ main {
     flex: 1 1 auto;
     overflow: auto;
 }
+.modal-overlay.modal-full .launch-output {
+    max-height: none;
+    flex: 1;
+}
 .modal-header {
     display: flex;
     justify-content: space-between;

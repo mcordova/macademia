@@ -40,7 +40,7 @@ if (is_service($serviceKey)) {
     $command = sprintf('journalctl -u %s --no-pager -n %d --output=short-iso', escapeshellarg($logUnit), $lines);
     exec($command . ' 2>&1', $output, $exitCode);
 
-    $logText = implode("\n", $output);
+    $logText = str_replace("\r", '', implode("\n", $output));
 
     // Fallback to log files
     if (empty(trim($logText)) || $exitCode !== 0) {
@@ -54,7 +54,7 @@ if (is_service($serviceKey)) {
                 $logFile = $path;
                 $logCommand = sprintf('tail -n %d %s', $lines, escapeshellarg($path));
                 exec($logCommand . ' 2>&1', $output, $exitCode);
-                $logText = implode("\n", $output);
+                $logText = str_replace("\r", '', implode("\n", $output));
                 $source = 'file';
                 break;
             }
@@ -73,7 +73,7 @@ if (is_service($serviceKey)) {
     $command = sprintf('docker logs --tail %d %s 2>&1', $lines, escapeshellarg($container));
     exec($command, $output, $exitCode);
 
-    $logText = implode("\n", $output);
+    $logText = str_replace("\r", '', implode("\n", $output));
     $source = 'docker';
     $viewCommand = sprintf('docker logs --tail %d -f %s', $lines, $container);
 }
@@ -90,7 +90,9 @@ if ($colorize && $logText) {
         fclose($pipes[1]);
         proc_close($process);
         if ($colorized !== false && $colorized !== '') {
-            $logText = $colorized;
+            // ccze outputs <br/> for line breaks AND literal newlines;
+            // strip \r\n since they'd double space inside a <pre> with white-space:pre-wrap
+            $logText = str_replace(["\r\n", "\r", "\n"], '', $colorized);
             $contentType = 'html';
         }
     }

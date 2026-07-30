@@ -70,5 +70,14 @@
         "exit_code": 0,
         "output": "CONTAINER ID   IMAGE         COMMAND                  CREATED       STATUS        PORTS                                         NAMES\n34545d95a3b1   postgres:16   \"docker-entrypoint.s…\"   2 weeks ago   Up 26 hours   0.0.0.0:5433->5432\/tcp, [::]:5433->5432\/tcp   litellm-db",
         "duration_ms": 21
+    },
+    {
+        "id": 9,
+        "program_id": 25,
+        "executed_at": "2026-07-30 17:52:02",
+        "command_run": "docker 'ps'",
+        "exit_code": 0,
+        "output": "CONTAINER ID   IMAGE         COMMAND                  CREATED       STATUS        PORTS                                         NAMES\n34545d95a3b1   postgres:16   \"docker-entrypoint.s…\"   2 weeks ago   Up 26 hours   0.0.0.0:5433->5432\/tcp, [::]:5433->5432\/tcp   litellm-db",
+        "duration_ms": 19
     }
 ]

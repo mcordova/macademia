@@ -36,10 +36,10 @@ if (!$program) {
     exit;
 }
 
-// Services must use service-control.php instead
-if ($program['program_type'] === 'service') {
+// Services and docker containers must use service-control.php instead
+if ($program['program_type'] === 'service' || $program['program_type'] === 'docker') {
     http_response_code(400);
-    echo json_encode(['error' => 'Services must use service-control.php']);
+    echo json_encode(['error' => 'Services and containers must use service-control.php']);
     exit;
 }
 

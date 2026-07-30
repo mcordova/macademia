@@ -264,13 +264,35 @@
         "created_at": "2026-07-26 10:31:28"
     },
     {
+        "name": "Docker PS",
+        "package": null,
+        "command_key": "docker_ps",
+        "category": "Containers",
+        "program_type": "terminal",
+        "notes": "List running containers",
+        "id": 25,
+        "enabled": 1,
+        "created_at": "2026-07-26 10:31:28"
+    },
+    {
+        "name": "Docker Images",
+        "package": null,
+        "command_key": "docker_images",
+        "category": "Containers",
+        "program_type": "terminal",
+        "notes": "List downloaded images",
+        "id": 46,
+        "enabled": 1,
+        "created_at": "2026-07-26 10:31:28"
+    },
+    {
         "name": "Docker Compose",
         "package": "docker-compose-v2",
         "command_key": null,
         "category": "Containers",
         "program_type": "terminal",
         "notes": "Docker Compose v2",
-        "id": 25,
+        "id": 47,
         "enabled": 1,
         "created_at": "2026-07-26 10:31:28"
     },

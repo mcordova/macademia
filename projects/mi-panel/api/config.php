@@ -24,6 +24,8 @@ define('COMMAND_WHITELIST', [
 
     // Docker
     'docker'            => ['cmd' => 'docker',            'args' => null],
+    'docker_ps'         => ['cmd' => 'docker',            'args' => ['ps']],
+    'docker_images'      => ['cmd' => 'docker',            'args' => ['images']],
     'docker_compose'    => ['cmd' => 'docker',            'args' => ['compose']],
 
     // Dev tools

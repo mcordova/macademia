@@ -1,0 +1,3 @@
+# English (438 characters):
+
+With almost 20 years working across the full software development lifecycle, I'm now redirecting my career toward cybersecurity (Blue Team), building on that foundation with training in digital forensics, SIEM and incident response. My greatest strength isn't mastering one specific technology, but a proven ability to reinvent my skill set every few years. I want to bring that technical depth and constant curiosity to a security team.

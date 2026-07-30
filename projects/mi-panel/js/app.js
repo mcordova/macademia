@@ -205,27 +205,31 @@
             let actionsHtml = '';
 
             if (isService) {
-                const st = serviceStates[p.command_key] || null;
+                const hasKey = !!p.command_key;
+                const st = hasKey ? (serviceStates[p.command_key] || null) : null;
                 const isActive = st ? st.active : false;
                 const hasPort = st && st.port;
 
                 statusHtml = `
                     <div class="service-status" data-service="${esc(p.command_key || '')}">
                         <span class="status-dot ${st ? (isActive ? 'status-active' : 'status-inactive') : 'status-loading'}"></span>
-                        <span class="status-text">${st ? (isActive ? 'Running' : 'Stopped') : 'Checking...'}</span>
+                        <span class="status-text">${st ? (isActive ? 'Running' : 'Stopped') : hasKey ? 'Checking...' : 'External'}</span>
                         ${st && st.memory ? `<span class="status-mem">(${esc(st.memory)})</span>` : ''}
+                        ${st && st.port ? `<span class="card-port">Port ${st.port}</span>` : ''}
                     </div>`;
 
-                actionsHtml = isActive
-                    ? `<button class="btn btn-stop" data-action="stop" data-service="${esc(p.command_key)}">Stop</button>
-                       <button class="btn btn-restart" data-action="restart" data-service="${esc(p.command_key)}">Restart</button>`
-                    : `<button class="btn btn-launch" data-action="start" data-service="${esc(p.command_key)}">Start</button>`;
-                actionsHtml += `<button class="btn btn-logs" data-service="${esc(p.command_key)}" data-program-name="${esc(p.name)}">Logs</button>`;
+                if (hasKey) {
+                    actionsHtml = isActive
+                        ? `<button class="btn btn-stop" data-action="stop" data-service="${esc(p.command_key)}">Stop</button>
+                           <button class="btn btn-restart" data-action="restart" data-service="${esc(p.command_key)}">Restart</button>`
+                        : `<button class="btn btn-launch" data-action="start" data-service="${esc(p.command_key)}">Start</button>`;
+                    actionsHtml += `<button class="btn btn-logs" data-service="${esc(p.command_key)}" data-program-name="${esc(p.name)}">Logs</button>`;
 
-                // Web link when running and has a port
-                if (isActive && hasPort) {
-                    const url = `http://localhost:${st.port}${st.url_path || '/'}`;
-                    actionsHtml += `<a class="btn btn-open" href="${esc(url)}" target="_blank" rel="noopener" title="Open in new tab">Open</a>`;
+                    // Web link when running and has a port
+                    if (isActive && hasPort) {
+                        const url = `http://localhost:${st.port}${st.url_path || '/'}`;
+                        actionsHtml += `<a class="btn btn-open" href="${esc(url)}" target="_blank" rel="noopener" title="Open in new tab">Open</a>`;
+                    }
                 }
             }
 

@@ -309,6 +309,13 @@ main {
     align-items: center;
     gap: 0.4rem;
     font-size: 0.75rem;
+    flex-wrap: wrap;
+}
+.card-port {
+    color: var(--accent);
+    font-family: 'SF Mono', monospace;
+    font-size: 0.7rem;
+    opacity: 0.8;
 }
 .status-dot {
     width: 8px;

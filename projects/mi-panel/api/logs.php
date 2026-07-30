@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 $serviceKey = $_GET['service'] ?? '';
 $lines = min(max((int) ($_GET['lines'] ?? 100), 10), 1000);
+$colorize = ($_GET['colorize'] ?? '') === '1';
 
 if ($serviceKey === '') {
     http_response_code(400);
@@ -56,6 +57,24 @@ if (empty(trim($logText)) || $exitCode !== 0) {
     }
 }
 
+// Colorize with ccze if requested
+$contentType = 'text';
+if ($colorize && $logText) {
+    $descriptorspec = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+    $process = proc_open('ccze -h', $descriptorspec, $pipes);
+    if (is_resource($process)) {
+        fwrite($pipes[0], $logText);
+        fclose($pipes[0]);
+        $colorized = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        proc_close($process);
+        if ($colorized !== false && $colorized !== '') {
+            $logText = $colorized;
+            $contentType = 'html';
+        }
+    }
+}
+
 // Build the "view command" for the user
 if ($logFile) {
     $viewCommand = sprintf('tail -n %d %s', $lines, $logFile);
@@ -64,11 +83,12 @@ if ($logFile) {
 }
 
 echo json_encode([
-    'service'      => $serviceKey,
-    'log_unit'     => $logUnit,
-    'lines'        => $lines,
-    'log'          => $logText ?: '(no log entries found)',
-    'view_command' => $viewCommand,
-    'source'       => $logFile ? 'file' : 'journalctl',
-    'log_file'     => $logFile,
+    'service'       => $serviceKey,
+    'log_unit'      => $logUnit,
+    'lines'         => $lines,
+    'log'           => $logText ?: '(no log entries found)',
+    'view_command'  => $viewCommand,
+    'source'        => $logFile ? 'file' : 'journalctl',
+    'log_file'      => $logFile,
+    'content_type'  => $contentType,
 ]);

@@ -120,6 +120,20 @@ header h1 {
     flex-wrap: wrap;
     gap: 0.25rem;
 }
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+    margin-left: auto;
+}
+.filter-checkbox input[type="checkbox"] {
+    accent-color: var(--accent);
+    cursor: pointer;
+}
 .cat-btn {
     background: transparent;
     border: 1px solid var(--border);

@@ -11,10 +11,11 @@
     let searchQuery = '';
     let sortBy = 'name';
     let currentLogsService = null;
+    let showExternal = true;
 
     // ── Cookie helpers ──
     function saveState() {
-        const state = { v: 1, t: activeType, c: activeCategory, q: searchQuery, s: sortBy };
+        const state = { v: 2, t: activeType, c: activeCategory, q: searchQuery, s: sortBy, x: showExternal };
         document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(state))};path=/;max-age=2592000`;
     }
 
@@ -23,11 +24,12 @@
         if (!match) return;
         try {
             const state = JSON.parse(decodeURIComponent(match[1]));
-            if (state && state.v === 1) {
+            if (state && (state.v === 1 || state.v === 2)) {
                 activeType = state.t || 'all';
                 activeCategory = state.c || null;
                 searchQuery = state.q || '';
                 sortBy = state.s || 'name';
+                if (state.v >= 2) showExternal = state.x !== false;
             }
         } catch { /* ignore corrupt cookie */ }
     }
@@ -70,6 +72,8 @@
         }
         // Restore sort select
         sortSelect.value = sortBy;
+        // Restore external checkbox
+        document.getElementById('showExternal').checked = showExternal;
     }
 
     // ── Load programs ──
@@ -142,6 +146,7 @@
         const filtered = allPrograms.filter(p => {
             if (activeType !== 'all' && p.program_type !== activeType) return false;
             if (activeCategory && p.category !== activeCategory) return false;
+            if (!showExternal && p.program_type === 'service' && !p.command_key) return false;
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
                 const haystack = `${p.name} ${p.package || ''} ${p.notes || ''} ${p.category}`.toLowerCase();
@@ -460,6 +465,13 @@
                 btn.classList.add('active');
                 activeCategory = btn.dataset.category;
             }
+            saveState();
+            render();
+        });
+
+        // External services toggle
+        document.getElementById('showExternal').addEventListener('change', (e) => {
+            showExternal = e.target.checked;
             saveState();
             render();
         });

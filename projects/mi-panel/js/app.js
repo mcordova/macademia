@@ -12,10 +12,11 @@
     let sortBy = 'name';
     let currentLogsService = null;
     let showExternal = true;
+    let logsColorize = false;
 
     // ── Cookie helpers ──
     function saveState() {
-        const state = { v: 2, t: activeType, c: activeCategory, q: searchQuery, s: sortBy, x: showExternal };
+        const state = { v: 3, t: activeType, c: activeCategory, q: searchQuery, s: sortBy, x: showExternal, lc: logsColorize };
         document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(state))};path=/;max-age=2592000`;
     }
 
@@ -24,12 +25,13 @@
         if (!match) return;
         try {
             const state = JSON.parse(decodeURIComponent(match[1]));
-            if (state && (state.v === 1 || state.v === 2)) {
+            if (state && state.v >= 1 && state.v <= 3) {
                 activeType = state.t || 'all';
                 activeCategory = state.c || null;
                 searchQuery = state.q || '';
                 sortBy = state.s || 'name';
                 if (state.v >= 2) showExternal = state.x !== false;
+                if (state.v >= 3) logsColorize = state.lc === true;
             }
         } catch { /* ignore corrupt cookie */ }
     }
@@ -380,6 +382,7 @@
     async function showLogs(serviceKey, programName) {
         currentLogsService = serviceKey;
         document.getElementById('logsTitle').textContent = `Logs — ${programName}`;
+        document.getElementById('logsColorize').checked = logsColorize;
         await loadLogs(serviceKey);
         logsModal.classList.add('open');
     }
@@ -481,6 +484,12 @@
             showExternal = e.target.checked;
             saveState();
             render();
+        });
+
+        // Logs colorize toggle
+        document.getElementById('logsColorize').addEventListener('change', (e) => {
+            logsColorize = e.target.checked;
+            saveState();
         });
 
         // Card actions (delegated)

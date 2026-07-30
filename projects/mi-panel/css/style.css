@@ -463,6 +463,20 @@ main {
     background: rgba(88,166,255,.2);
 }
 
+.logs-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+}
+.logs-checkbox input[type="checkbox"] {
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
 .logs-output {
     background: var(--bg);
     border: 1px solid var(--border);

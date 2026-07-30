@@ -371,7 +371,20 @@ main {
     flex-direction: column;
     box-shadow: var(--shadow);
 }
-.modal-wide { max-width: 900px; }
+.modal-wide {
+    max-width: 900px;
+    resize: both;
+    overflow: hidden;
+    min-width: 500px;
+    min-height: 300px;
+}
+.modal-wide .modal-body {
+    overflow: auto;
+    flex: 1 1 auto;
+}
+.modal-wide .logs-output {
+    max-height: none;
+}
 .modal-header {
     display: flex;
     justify-content: space-between;

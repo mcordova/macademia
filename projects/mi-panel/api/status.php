@@ -18,48 +18,76 @@ if ($service === '') {
     exit;
 }
 
-// Sanitize: only alphanumeric, hyphens, underscores
 if (!preg_match('/^[a-zA-Z0-9._-]+$/', $service)) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid service name']);
     exit;
 }
 
-// Check active status
-exec("systemctl is-active " . escapeshellarg($service), $activeOutput, $activeCode);
-$isActive = $activeCode === 0;
-
-// Check enabled status
-exec("systemctl is-enabled " . escapeshellarg($service), $enabledOutput, $enabledCode);
-$isEnabled = $enabledCode === 0;
-
-// Get main PID
-exec("systemctl show " . escapeshellarg($service) . " --property=MainPID --value", $pidOutput, $pidCode);
-$mainPid = ($pidCode === 0) ? trim(implode("\n", $pidOutput)) : null;
-
-// Get memory usage if running
-$memoryUsage = null;
-if ($isActive && $mainPid && $mainPid !== '0') {
-    exec("systemctl show " . escapeshellarg($service) . " --property=MemoryCurrent --value", $memOutput, $memCode);
-    if ($memCode === 0) {
-        $bytes = (int) trim(implode("\n", $memOutput));
-        $memoryUsage = format_bytes($bytes);
-    }
-}
-
 $port = null;
-$urlPath = '/';
+$urlPath = null;
+$pid = null;
+$memoryUsage = null;
+$isActive = false;
+$isEnabled = false;
+$statusText = 'unknown';
+
 if (is_service($service)) {
-    $port = SERVICES[$service]['port'];
+    // systemd service
+    exec("systemctl is-active " . escapeshellarg($service), $activeOutput, $activeCode);
+    $isActive = $activeCode === 0;
+
+    exec("systemctl is-enabled " . escapeshellarg($service), $enabledOutput, $enabledCode);
+    $isEnabled = $enabledCode === 0;
+
+    $statusText = trim(implode("\n", $activeOutput));
+
+    exec("systemctl show " . escapeshellarg($service) . " --property=MainPID --value", $pidOutput, $pidCode);
+    $mainPid = ($pidCode === 0) ? trim(implode("\n", $pidOutput)) : null;
+    $pid = ($mainPid !== '0' && $mainPid !== '') ? $mainPid : null;
+
+    if ($isActive && $pid) {
+        exec("systemctl show " . escapeshellarg($service) . " --property=MemoryCurrent --value", $memOutput, $memCode);
+        if ($memCode === 0) {
+            $bytes = (int) trim(implode("\n", $memOutput));
+            $memoryUsage = format_bytes($bytes);
+        }
+    }
+
+    $port = SERVICES[$service]['port'] ?? null;
     $urlPath = SERVICES[$service]['url_path'] ?? '/';
+
+} elseif (is_docker($service)) {
+    // Docker container
+    $container = DOCKER[$service]['container'];
+
+    exec("docker inspect --format='{{.State.Status}}' " . escapeshellarg($container) . " 2>/dev/null", $statusOut, $statusCode);
+    $containerStatus = $statusCode === 0 ? trim(implode("\n", $statusOut)) : 'not-found';
+    $isActive = $containerStatus === 'running';
+    $isEnabled = $containerStatus !== 'not-found';
+    $statusText = $containerStatus;
+
+    if ($isActive) {
+        exec("docker inspect --format='{{.State.Pid}}' " . escapeshellarg($container) . " 2>/dev/null", $pidOut, $pidCode);
+        $mainPid = $pidCode === 0 ? trim(implode("\n", $pidOut)) : null;
+        $pid = ($mainPid !== '0' && $mainPid !== '') ? $mainPid : null;
+
+        exec("docker stats --no-stream --format '{{.MemUsage}}' " . escapeshellarg($container) . " 2>/dev/null", $memOut, $memCode);
+        if ($memCode === 0) {
+            $memoryUsage = trim(implode("\n", $memOut));
+        }
+    }
+
+    $port = DOCKER[$service]['port'] ?? null;
+    $urlPath = DOCKER[$service]['url_path'] ?? null;
 }
 
 echo json_encode([
     'service'  => $service,
     'active'   => $isActive,
     'enabled'  => $isEnabled,
-    'status'   => trim(implode("\n", $activeOutput)),
-    'pid'      => ($mainPid !== '0' && $mainPid !== '') ? $mainPid : null,
+    'status'   => $statusText,
+    'pid'      => $pid,
     'memory'   => $memoryUsage,
     'port'     => $port,
     'url_path' => $urlPath,

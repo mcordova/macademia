@@ -52,9 +52,15 @@ define('SERVICES', [
     'ollama'     => ['unit' => 'ollama',      'log_unit' => 'ollama',   'port' => 11434,  'url_path' => '/'],
     'litellm'    => ['unit' => 'litellm',     'log_unit' => 'litellm',  'port' => 4000,   'url_path' => '/'],
     'jenkins'    => ['unit' => 'jenkins',     'log_unit' => 'jenkins',  'port' => 8080,   'url_path' => '/'],
-    'postgresql' => ['unit' => 'postgresql',  'log_unit' => 'postgresql','port' => 5432,  'url_path' => null],
     'apache2'    => ['unit' => 'apache2',     'log_unit' => 'apache2',  'port' => 80,     'url_path' => '/'],
     'cups'       => ['unit' => 'cups',        'log_unit' => 'cups',     'port' => 631,    'url_path' => '/'],
+]);
+
+// Docker container definitions: maps command_key => container details.
+// Used by status.php, service-control.php, and logs.php.
+// 'container' = docker container name.
+define('DOCKER', [
+    'postgresql' => ['container' => 'postgresql',  'port' => 5432,  'url_path' => null],
 ]);
 
 // Helper: check if a command key is whitelisted
@@ -65,6 +71,11 @@ function is_whitelisted(string $key): bool {
 // Helper: check if a key is a known service
 function is_service(string $key): bool {
     return isset(SERVICES[$key]);
+}
+
+// Helper: check if a key is a known docker container
+function is_docker(string $key): bool {
+    return isset(DOCKER[$key]);
 }
 
 // CORS: allow local dev (only in web context)

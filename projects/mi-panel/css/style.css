@@ -112,6 +112,7 @@ header h1 {
     display: inline-block;
 }
 .dot-service { background: var(--green); }
+.dot-docker  { background: var(--yellow); }
 .dot-terminal { background: var(--accent); }
 .dot-gui { background: var(--purple); }
 
@@ -223,8 +224,9 @@ main {
     text-transform: uppercase;
     letter-spacing: 0.03em;
 }
-.badge-service  { background: rgba(63,185,80,.15);  color: var(--green); }
-.badge-terminal { background: rgba(88,166,255,.15); color: var(--accent); }
+.badge-service  { background: rgba(63,185,80,.15);   color: var(--green); }
+.badge-docker   { background: rgba(210,153,34,.15);  color: var(--yellow); }
+.badge-terminal { background: rgba(88,166,255,.15);  color: var(--accent); }
 .badge-gui      { background: rgba(188,140,255,.15); color: var(--purple); }
 
 .card-notes {

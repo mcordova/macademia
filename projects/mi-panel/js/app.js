@@ -116,11 +116,13 @@
     // ── Stats ──
     function renderStats() {
         const services = allPrograms.filter(p => p.program_type === 'service').length;
+        const docker = allPrograms.filter(p => p.program_type === 'docker').length;
         const terminals = allPrograms.filter(p => p.program_type === 'terminal').length;
         const guis = allPrograms.filter(p => p.program_type === 'gui').length;
         stats.innerHTML = `
             <span><span class="stat-value">${allPrograms.length}</span> programs</span>
             <span><span class="stat-value">${services}</span> services</span>
+            <span><span class="stat-value">${docker}</span> docker</span>
             <span><span class="stat-value">${terminals}</span> terminal</span>
             <span><span class="stat-value">${guis}</span> GUI</span>
         `;
@@ -128,7 +130,7 @@
 
     // ── Fetch all service statuses ──
     async function fetchAllServiceStatuses() {
-        const services = allPrograms.filter(p => p.program_type === 'service' && p.command_key);
+        const services = allPrograms.filter(p => (p.program_type === 'service' || p.program_type === 'docker') && p.command_key);
         const promises = services.map(async (p) => {
             const key = p.command_key;
             try {
@@ -148,7 +150,7 @@
         const filtered = allPrograms.filter(p => {
             if (activeType !== 'all' && p.program_type !== activeType) return false;
             if (activeCategory && p.category !== activeCategory) return false;
-            if (!showExternal && p.program_type === 'service' && !p.command_key) return false;
+            if (!showExternal && (p.program_type === 'service' || p.program_type === 'docker') && !p.command_key) return false;
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
                 const haystack = `${p.name} ${p.package || ''} ${p.notes || ''} ${p.category}`.toLowerCase();
@@ -158,13 +160,13 @@
         });
 
         // Sort
-        const typeOrder = { service: 0, terminal: 1, gui: 2 };
+        const typeOrder = { service: 0, docker: 1, terminal: 2, gui: 3 };
         filtered.sort((a, b) => {
             switch (sortBy) {
                 case 'status': {
-                    // Running services first, then stopped, then non-services
-                    const aActive = a.program_type === 'service' && serviceStates[a.command_key]?.active;
-                    const bActive = b.program_type === 'service' && serviceStates[b.command_key]?.active;
+                    // Running services/containers first, then stopped, then non-services
+                    const aActive = (a.program_type === 'service' || a.program_type === 'docker') && serviceStates[a.command_key]?.active;
+                    const bActive = (b.program_type === 'service' || b.program_type === 'docker') && serviceStates[b.command_key]?.active;
                     if (aActive !== bActive) return aActive ? -1 : 1;
                     return a.name.localeCompare(b.name);
                 }
@@ -181,9 +183,9 @@
                     return a.name.localeCompare(b.name);
                 }
                 case 'port': {
-                    const aPort = (a.program_type === 'service' && serviceStates[a.command_key]?.port) || 0;
-                    const bPort = (b.program_type === 'service' && serviceStates[b.command_key]?.port) || 0;
-                    // Services with port first (ascending), then no-port + non-services alphabetically
+                    const aPort = ((a.program_type === 'service' || a.program_type === 'docker') && serviceStates[a.command_key]?.port) || 0;
+                    const bPort = ((b.program_type === 'service' || b.program_type === 'docker') && serviceStates[b.command_key]?.port) || 0;
+                    // Services/containers with port first (ascending), then no-port + rest alphabetically
                     if (aPort && bPort) return aPort - bPort;
                     if (aPort && !bPort) return -1;
                     if (!aPort && bPort) return 1;
@@ -205,8 +207,8 @@
         grid.innerHTML = filtered.map(p => {
             const badgeClass = `badge-${p.program_type}`;
             const typeLabel = p.program_type.charAt(0).toUpperCase() + p.program_type.slice(1);
-            const canLaunch = p.command_key && p.program_type !== 'service';
-            const isService = p.program_type === 'service';
+            const canLaunch = p.command_key && p.program_type !== 'service' && p.program_type !== 'docker';
+            const isService = p.program_type === 'service' || p.program_type === 'docker';
 
             let statusHtml = '';
             let actionsHtml = '';
